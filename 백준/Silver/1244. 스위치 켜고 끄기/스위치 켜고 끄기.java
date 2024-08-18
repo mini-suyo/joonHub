@@ -1,55 +1,44 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
 
 	public static void main(String[] args) {
-
 		Scanner sc = new Scanner(System.in);
+		int N = sc.nextInt(); // 스위치 개수 (1)
+		int[] switchNum = new int[N];
 
-		int switch_number = sc.nextInt();
-
-		int[] arr = new int[switch_number];
-
-		for (int i = 0; i < switch_number; i++) {
-			arr[i] = sc.nextInt();
+		for (int i = 0; i < switchNum.length; i++) {
+			switchNum[i] = sc.nextInt();
 		}
 
-		int person = sc.nextInt();
+		int studentNum = sc.nextInt();
 
-		for (int i = 0; i < person; i++) {
+		for (int i = 0; i < studentNum; i++) {
+			int gender = sc.nextInt();
+			int num = sc.nextInt();
 
-			int sex = sc.nextInt();
-			int number = sc.nextInt();
-
-			if (sex == 1) {
-				int k = 1;
-				while (number * k <= arr.length) {
-					if (arr[number * k - 1] == 0) {
-						arr[number * k - 1] = 1;
-					} else if (arr[number * k - 1] == 1) {
-						arr[number * k - 1] = 0;
-					}
-					k++;
+			// 남자일때
+			if (gender == 1) {
+				int tmp = num; // 배수 계산에 사용할 임시 값
+				while (tmp <= N) {
+					toggle(switchNum, tmp - 1);
+					tmp += num;
 				}
 			}
+			// 여자일때
+			else {
+				// 자기 자신은 무조건 변경
+				switchNum[num - 1] = 1 - switchNum[num - 1];
 
-			if (sex == 2) {
-				int k = 1;
-				if(arr[number-1]==0) {
-					arr[number-1]=1;
-				}
-				else {
-					arr[number-1]=0;
-				}
-				while (number + k <= arr.length && number - k > 0) {
-					if (arr[number - 1 - k] == arr[number - 1 + k] && arr[number - 1 - k] == 1) {
-						arr[number - 1 - k] = 0;
-						arr[number - 1 + k] = 0;
-						k++;
-					} else if (arr[number - 1 - k] == arr[number - 1 + k] && arr[number - 1 - k] == 0) {
-						arr[number - 1 - k] = 1;
-						arr[number - 1 + k] = 1;
-						k++;
+				// 양옆을 확인하고 같다면 변경
+				int idx = 1;
+				while (true) {
+					if ((num - 1 - idx >= 0 && num - 1 + idx < N)
+							&& (switchNum[num - 1 - idx] == switchNum[num - 1 + idx])) {
+						toggle(switchNum, num - 1 - idx);
+						toggle(switchNum, num - 1 + idx);
+						idx += 1;
 					} else {
 						break;
 					}
@@ -58,12 +47,15 @@ public class Main {
 			}
 
 		}
-		for(int result=0; result<arr.length; result++) {
-			System.out.print(arr[result]+" ");
-			if (result %20==19) {
+		for (int i = 0; i < switchNum.length; i++) {
+			System.out.print(switchNum[i] + " ");
+			if (((i + 1) % 20) == 0) {
 				System.out.println();
 			}
-			}
 		}
-
 	}
+
+	static void toggle(int[] array, int index) {
+		array[index] = 1 - array[index];
+	}
+}

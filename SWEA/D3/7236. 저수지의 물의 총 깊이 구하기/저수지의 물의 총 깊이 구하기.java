@@ -1,68 +1,50 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Solution {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
+		
 		int T = sc.nextInt();
-
-		for (int t = 1; t <= T; t++) {
-			int N = sc.nextInt(); // 저수지의 크기
-			int[][] map = new int[N][N];
-
-			// G는 0, W는 1로 설정
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < N; j++) {
-					String tmp = sc.next();
-					if (tmp.equals("G")) {
-						map[i][j] = 0;
-					} else {
-						map[i][j] = 1;
-					}
+		for (int tc = 1; tc <= T; tc++) {
+			
+			int N = sc.nextInt(); //구획 크기		
+			String[][] arr = new String[N][N];
+			for (int i = 0; i < arr.length; i++) {
+				for (int j = 0; j < arr.length; j++) {
+					arr[i][j] = sc.next();
 				}
 			}
-
-			int cnt = 0;
-			int max = Integer.MIN_VALUE;
-			for (int i = 1; i < N - 1; i++) {
-				for (int j = 1; j < N - 1; j++) {
+			
+			int[] dr = new int[] {-1,1,0,0,-1,-1,1,1};
+			int[] dc = new int[] {0,0,-1,1,-1,1,-1,1}; //상,하,좌,우,좌상,우상,좌하,우하
+			int cnt = 0; // W개수 세는 변수
+			int max = 0; // 최댓값 저장하는 변수
+			for (int r = 0; r < arr.length; r++) {
+				for (int c = 0; c < arr.length; c++) {
 					cnt = 0;
-					if (map[i - 1][j - 1] == 1) {
-						cnt++;
-					}
-					if (map[i - 1][j] == 1) {
-						cnt++;
-					}
-					if (map[i - 1][j + 1] == 1) {
-						cnt++;
-					}
-					if (map[i][j - 1] == 1) {
-						cnt++;
-					}
-					if (map[i][j + 1] == 1) {
-						cnt++;
-					}
-					if (map[i + 1][j - 1] == 1) {
-						cnt++;
-					}
-					if (map[i + 1][j] == 1) {
-						cnt++;
-					}
-					if (map[i + 1][j + 1] == 1) {
-						cnt++;
-					}
-					if (cnt == 0) {
-						cnt++;
-					}
-					if (max < cnt) {
-						max = cnt;
+					if(arr[r][c].equals("W")) {
+						for (int i = 0; i < dc.length; i++) {
+							int nr = r + dr[i];
+							int nc = c + dc[i];
+							
+							if(nr >= 0 && nc >= 0 && nr < N && nc < N) {
+								if(arr[nr][nc].equals("W")) {
+									cnt++;
+								}
+							}
+						}
+						if(cnt > max) {
+							max = cnt;
+						}
 					}
 				}
 			}
-			System.out.println("#" + t + " " + max);
-
+			if(max == 0) {
+				max = 1;
+			}
+			System.out.println("#"+ tc+ " "+ max);
 		}
-
 	}
-
 }

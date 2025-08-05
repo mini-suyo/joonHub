@@ -1,71 +1,52 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
-	static int N,M,K,X;
-	static ArrayList<Integer>[] adjList;
-	static boolean[] visited;
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		
-		N = sc.nextInt(); // 도시의 개수 -> 정점 개수
-		M = sc.nextInt(); // 도로의 개수 -> 간선 개수
-		K = sc.nextInt(); // 최단 거리
-		X = sc.nextInt(); // 출발 도시의 번호
-		
-		visited = new boolean[N+1];
-		adjList = new ArrayList[N+1];
-		
-		for (int i = 1; i < N+1; i++) {
-			adjList[i] = new ArrayList<>();
-		}
-		
-		for (int i = 0; i < M; i++) {
-			int A = sc.nextInt();
-			int B = sc.nextInt();
-			adjList[A].add(B);
-		}
-		
-		bfs(X);
-		
-	}
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        int k = sc.nextInt();
+        int x = sc.nextInt();
 
-	private static void bfs(int V) {
-		Queue<int[]> queue = new LinkedList<>();
-		PriorityQueue<Integer> squeue = new PriorityQueue<>();
-		
-		visited[V] = true;
-		queue.add(new int[]{V,0});
-		
-		boolean check = false; //확인
-		
-		while(!queue.isEmpty()) {
-				int[] curr = queue.poll();
-				
-				int city = curr[0];
-				int dist = curr[1];
-				if(dist == K) {
-					squeue.add(city);
-					check = true;
-					continue;
-				}
-				for (int i : adjList[city]) {
-					if(!visited[i]) {
-						visited[i] =true;
-						queue.add(new int[]{i,dist+1});
-					}
-				}
-								
-		}
-		if(!check) {
-			System.out.println(-1);
-		} else 
-			while(!squeue.isEmpty()) {
-				System.out.println(squeue.poll());
-			}
-	}
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        for (int i = 0; i < m; i++) {
+            int from = sc.nextInt();
+            int to = sc.nextInt();
+            adj.get(from).add(to);
+        }
+
+        int[] distance = new int[n + 1];
+        Arrays.fill(distance, -1);
+        distance[x] = 0;
+
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(x);
+
+        while (!queue.isEmpty()) {
+            int current = queue.poll();
+            for (int next : adj.get(current)) {
+                if (distance[next] == -1) {
+                    distance[next] = distance[current] + 1;
+                    queue.offer(next);
+                }
+            }
+        }
+
+        boolean found = false;
+        for (int i = 1; i <= n; i++) {
+            if (distance[i] == k) {
+                System.out.println(i);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println(-1);
+        }
+    }
 }
